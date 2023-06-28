@@ -1,0 +1,130 @@
+package packet.one;
+
+import java.awt.FlowLayout;
+import javax.swing.*;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+
+class frame extends JFrame{
+	JPanel p1,p2,p3,p;
+	JButton bd,ba,bc,bu;
+	JComboBox ct,cw;
+	JLabel l1,l2;
+	JTextField tf1;
+	JTextField tf2;
+	Connection cnx;
+	String tab1[]={"A","B"};
+	String tab2[]={"delete ","update","insert","select"};
+	   JTable table;
+	    private DefaultTableModel model;
+	
+	frame(Connection xn){
+		super("second");
+		cnx=xn;
+		setSize(400,400);
+		setVisible(true);
+		l1=new JLabel("choose table");
+		l2=new JLabel("choose operation");
+		ct=new JComboBox(tab1);
+		bd=new JButton("delete");ba=new JButton("affiche");bc=new JButton("create");bu=new JButton("update");
+		p1=new JPanel(new FlowLayout(FlowLayout.CENTER));p1.add(ct);
+		tf1= new JTextField(20); p1.add(tf1);
+		tf2= new JTextField(20); p1.add(tf2);
+		p2=new JPanel(new FlowLayout(FlowLayout.CENTER));p2.add(ba);p2.add(bu);p2.add(bc);p2.add(bd);
+		p3=new JPanel(new FlowLayout(FlowLayout.CENTER)); 
+		  p=new JPanel(new GridLayout(3,1));p.add(p1);p.add(p2);p.add(p3);
+		  table = new JTable();
+	        model = new DefaultTableModel();
+	        p3.add(table);
+	        setContentPane(p);
+	        table.setModel(model);
+	        bu.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {//Integer.parseInt(tf2.getText())
+	        		try {
+	        			Statement stmt = cnx.createStatement();// "+ct.getSelectedItem()+"set B2 = "+tf2.getText()+" where B1 ="+tf1.getText()
+	                    int rs = stmt.executeUpdate("update "+ct.getSelectedItem()+" set B2='"+tf2.getText()+"' where B1="+Integer.parseInt(tf1.getText()) +"");
+	        		}
+	        	  catch (SQLException ee) {
+	                    ee.printStackTrace();
+	                }
+	        	}
+	        });
+	        bc.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		System.out.print("create");
+	        	}
+	        });
+	        bd.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		System.out.print("delelte");
+	        	}
+	        });
+	        ba.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                DBMSConnection conn = new DBMSConnection();
+	                cnx = conn.getConnection();
+	                try {
+	                 
+	                    Statement stmt = cnx.createStatement();
+	                    ResultSet rs = stmt.executeQuery("SELECT * from  "+ct.getSelectedItem());
+
+	                    // Loop through the result set and add each row to the model
+	                    ResultSetMetaData rsmd = rs.getMetaData();
+	                    int numColumns = rsmd.getColumnCount();
+	                    for (int i = 1; i <= numColumns; i++) {
+	                        model.addColumn(rsmd.getColumnName(i));
+	                    }
+	                    while (rs.next()) {
+	                        Vector<Object> row = new Vector<Object>();
+	                        for (int i = 1; i <= numColumns; i++) {
+	                            row.add(rs.getObject(i));
+	                        }
+	                        model.addRow(row);
+	                    }
+
+	                    // Close the connection
+	                    rs.close();
+	                    stmt.close();
+	                    cnx.close();
+	                } catch (SQLException ee) {
+	                    ee.printStackTrace();
+	                }
+	            }
+	        });
+
+
+	        // Add the JTable component to the JFrame and make it visible
+	        add(new JScrollPane(table));
+	        setVisible(true);
+
+		
+		
+	}
+}
+
+public class ffs {
+	public static void main(String[]args) {
+		Connection cnx=new DBMSConnection().getConnection();
+		
+new frame(cnx);
+	}
+
+}
