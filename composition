@@ -1,0 +1,91 @@
+package packet.one;
+import java.sql.*;
+public class composition {
+int qtcomposition,refcomposition,refingredient,refrecette;
+public composition(int refc,int refi,int refr) {
+	refcomposition=refc;
+	refrecette=refr;
+	refingredient=refi;
+}
+
+}
+
+class compositionDAO extends DAO1<composition>{
+	
+	public compositionDAO(Connection cnx) {
+		super(cnx);
+	}
+	public composition find(int id) {
+		composition elem=null;
+	try {
+		Statement stmt = cnx.createStatement();
+		  ResultSet rs = stmt.executeQuery("select *from composition where refcomposition='"+id+"'");
+		
+		   while (rs.next()) {
+			      
+			   int refi= rs.getInt("refingredient");
+			   int refc= rs.getInt("refcomposition");
+		      int refr= rs.getInt("refrecette");
+		 elem=new composition(refc,refi,refr);
+		  
+		    }
+		    return elem;
+		 
+	}
+	catch(Exception e) {
+		System.out.print("cant find element with the id "+id+"in the table rangement");
+		return null;
+	}
+	}
+	public boolean delete(composition t) {
+		
+		try {
+			Statement stmt = cnx.createStatement();
+			String cmd="delete from composition where refcomposition='"+t.refcomposition+"'";
+			  int res=stmt.executeUpdate(cmd);
+	
+			return true;
+		
+			
+		}
+	
+		catch(Exception e) {
+			System.out.print("cant find element with the id "+t.refrecette+"in the table rtypeingred");
+			return false;
+		}
+		
+		
+	}
+	public boolean update(composition t) {
+		try {
+	Statement stm=cnx.createStatement();
+String cmd="update composition set refrecette='"+t.refrecette+"' where refcomposition='"+t.refrecette+"'";
+			int rs=stm.executeUpdate(cmd);
+		return true;
+		}
+		catch(Exception e) {
+			System.out.print(e.getLocalizedMessage());
+			return false;
+		}
+	}
+	
+	//creation
+	public boolean create (composition t) {
+	
+		try {
+			Statement stmt = cnx.createStatement();
+			String cmd="insert into composition (refrecette,refingredient,refcomposition) values("+t.refrecette+","+t.refingredient+","+t.refcomposition+")";
+ int rs = stmt.executeUpdate(cmd);
+			
+
+		return true;
+	
+			    
+			   
+			 
+		}
+		catch(Exception e) {
+			System.out.print("cant create element with the id "+t.refrecette+"in the table rangement");
+			return true;
+		}
+	}
