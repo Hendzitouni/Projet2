@@ -1,0 +1,478 @@
+package packet.one;
+import java.util.*;
+
+import java.awt.event.*;
+import java.sql.Connection;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+public class Affichage extends JFrame{
+	 private JTable table;
+	    private DefaultTableModel model;
+	    JTextField jf,jf1;
+	    JLabel lb,lb2,lb3;
+	    JComboBox cb_table;
+	    JPanel p,p1,p2,p3;
+	    JButton mod,rech,del,insert;
+	    JButton reqs;
+	    String tables[]= {"Rangement","Ingredient","TypeIngredient","Recette","Composition","Produit"};
+Connection cnx;
+public Affichage(final Connection cnn) {
+	
+	super("Food managment");
+	setVisible(true);
+	setSize(400,400);
+	cnx=cnn;
+	lb=new JLabel("Choisissez le table");lb2=new JLabel("Choisissez l'operation ");lb3=new JLabel("Affichier une request");
+	cb_table=new JComboBox(tables);
+	mod=new JButton("UPdate");del=new JButton("delete");rech=new JButton("find");
+	insert=new JButton("insertion");
+	p=new JPanel(new GridLayout(6,1));
+	setContentPane(p);
+	p.add(lb);
+p.add(cb_table);
+	p2=new JPanel(new FlowLayout(FlowLayout.CENTER));
+	p2.add(mod);p2.add(rech);p2.add(del);p2.add(insert);p.add(lb2);
+	p.add(p2);p.add(lb3);
+	reqs=new JButton("les requets");
+	p3=new JPanel(new FlowLayout(FlowLayout.CENTER));
+	p3.add(reqs);p.add(p3);
+	reqs.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e) {
+			new Requets(cnx);
+		}
+	});
+	
+	insert.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			String tablee=cb_table.getSelectedItem()+"";
+			if(tablee.equals("Rangement")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();
+				pp.add(lbb);	pp.add(jf1); pp.add(lbb2); pp.add(u);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				Rangement r=new Rangement(Integer.parseInt((jf1.getText())),u.getText());
+			
+				if(jf1.getText()!="" && u.getText()!="")
+				new RangementDAO(cnx).create(r);
+				
+			}
+			if(tablee.equals("TypeIngredient")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();
+				pp.add(lbb);	pp.add(jf1); pp.add(lbb2); pp.add(u);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				TypeIngredient r=new TypeIngredient(u.getText(),Integer.parseInt((jf1.getText())));
+			
+				if(jf1.getText()!="" && u.getText()!="")
+				new typeingredientDAO(cnx).create(r);
+				
+			}
+			if(tablee.equals("Ingredient")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JLabel lbb3=new JLabel("Donner reftype");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb);	pp.add(jf1); pp.add(lbb2); pp.add(u);pp.add(lbb3);pp.add(u3);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				Ingredient r=new Ingredient(u.getText(),Integer.parseInt((jf1.getText())),Integer.parseInt(u3.getText()));
+			
+				if(jf1.getText()!="" && u.getText()!="")
+				new IngredientDAO(cnx).create(r);
+				
+			}
+			if(tablee.equals("Recette")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner nom");JLabel lbb2=new JLabel("Donner ref");
+				JLabel lbb3=new JLabel("Donner reftype");
+				JPanel pp=new JPanel(new GridLayout(3,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb1);	pp.add(u1); pp.add(lbb2); pp.add(u2);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				
+			Recette r=new Recette(u1.getText(),Integer.parseInt(u2.getText()));
+				if(u2.getText()!="" && u1.getText()!="")
+				new RecetteDAO(cnx).create(r);
+				
+			}
+			if(tablee.equals("Composition")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner ref composition");JLabel lbb2=new JLabel("Donner ingredient");
+				JLabel lbb3=new JLabel("Donner recette");
+				JPanel pp=new JPanel(new GridLayout(3,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb1);	pp.add(u1); pp.add(lbb2); pp.add(u2);pp.add(lbb3); pp.add(u3);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				
+			composition r=new composition(Integer.parseInt(u1.getText()),Integer.parseInt(u2.getText()),Integer.parseInt(u3.getText()));
+				if(u2.getText()!="" && u1.getText()!="")
+				new compositionDAO(cnx).create(r);
+				
+			}
+			if(tablee.equals("Produit")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner ref produit");JLabel lbb2=new JLabel("Donner descr");
+				JLabel lbb3=new JLabel("Donner date");
+				JLabel lbb4=new JLabel("Donner qt");
+				JLabel lbb5=new JLabel("Donner prix");
+				JLabel lbb6=new JLabel("Donner ref rnag");
+				JLabel lbb7=new JLabel("Donner ref ingred");
+				JPanel pp=new JPanel(new GridLayout(14,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				JTextField u5=new JTextField();JTextField u6=new JTextField();
+				JTextField u7=new JTextField();
+				pp.add(lbb1);	pp.add(u1); pp.add(lbb2); pp.add(u2);pp.add(lbb3); pp.add(u3);
+				pp.add(lbb4);	pp.add(u4); pp.add(lbb5); pp.add(u5);pp.add(lbb6); pp.add(u6);
+				pp.add(lbb7); pp.add(u7);
+				JOptionPane.showMessageDialog(null,  pp);
+				produit r=new produit(Integer.parseInt(u1.getText()),u2.getText(),u3.getText(),Integer.parseInt(u4.getText()),Integer.parseInt(u5.getText()),Integer.parseInt(u6.getText()),Integer.parseInt(u7.getText()));
+			//composition r=new composition(Integer.parseInt(u1.getText()),Integer.parseInt(u2.getText()),Integer.parseInt(u3.getText()));
+				if(u7.getText()!="" && u1.getText()!="")
+					new produitDAO(cnx).create(r);
+				
+			}
+		}
+	});
+	
+	mod.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			String tablee=cb_table.getSelectedItem()+"";
+			if(tablee.equals("Rangement")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();
+				pp.add(lbb);	pp.add(jf1); pp.add(lbb2); pp.add(u);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				Rangement r=new Rangement(Integer.parseInt((jf1.getText())),u.getText());
+			
+				if(jf1.getText()!="" && u.getText()!="")
+				new RangementDAO(cnx).update(r);
+				
+			}
+			if(tablee.equals("TypeIngredient")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();
+				pp.add(lbb);	pp.add(jf1); pp.add(lbb2); pp.add(u);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				TypeIngredient r=new TypeIngredient(u.getText(),Integer.parseInt((jf1.getText())));
+			
+				if(jf1.getText()!="" && u.getText()!="")
+				new typeingredientDAO(cnx).update(r);
+				
+			}
+			if(tablee.equals("Ingredient")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JLabel lbb3=new JLabel("Donner reftype");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb);	pp.add(jf1); pp.add(lbb2); pp.add(u);pp.add(lbb3);pp.add(u3);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				Ingredient r=new Ingredient(u.getText(),Integer.parseInt((jf1.getText())),Integer.parseInt(u3.getText()));
+			
+				if(jf1.getText()!="" && u.getText()!="")
+				new IngredientDAO(cnx).update(r);
+				
+			}
+			if(tablee.equals("Recette")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner nom");JLabel lbb2=new JLabel("Donner ref");
+				JLabel lbb3=new JLabel("Donner reftype");
+				JPanel pp=new JPanel(new GridLayout(3,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb1);	pp.add(u1); pp.add(lbb2); pp.add(u2);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				
+			Recette r=new Recette(u1.getText(),Integer.parseInt(u2.getText()));
+				if(u2.getText()!="" && u1.getText()!="")
+				new RecetteDAO(cnx).update(r);
+				
+			}
+			if(tablee.equals("Composition")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner ref composition");JLabel lbb2=new JLabel("Donner ingredient");
+				JLabel lbb3=new JLabel("Donner recette");
+				JPanel pp=new JPanel(new GridLayout(3,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb1);	pp.add(u1); pp.add(lbb2); pp.add(u2);pp.add(lbb3); pp.add(u3);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				
+			composition r=new composition(Integer.parseInt(u1.getText()),Integer.parseInt(u2.getText()),Integer.parseInt(u3.getText()));
+				if(u2.getText()!="" && u1.getText()!="")
+				new compositionDAO(cnx).update(r);
+				
+			}
+			if(tablee.equals("Produit")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner ref produit");JLabel lbb2=new JLabel("Donner descr");
+				JLabel lbb3=new JLabel("Donner date");
+				JLabel lbb4=new JLabel("Donner qt");
+				JLabel lbb5=new JLabel("Donner prix");
+				JLabel lbb6=new JLabel("Donner ref rnag");
+				JLabel lbb7=new JLabel("Donner ref ingred");
+				JPanel pp=new JPanel(new GridLayout(14,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				JTextField u5=new JTextField();JTextField u6=new JTextField();
+				JTextField u7=new JTextField();
+				pp.add(lbb1);	pp.add(u1); pp.add(lbb2); pp.add(u2);pp.add(lbb3); pp.add(u3);
+				pp.add(lbb4);	pp.add(u4); pp.add(lbb5); pp.add(u5);pp.add(lbb6); pp.add(u6);
+				pp.add(lbb7); pp.add(u7);
+				JOptionPane.showMessageDialog(null,  pp);
+				produit r=new produit(Integer.parseInt(u1.getText()),u2.getText(),u3.getText(),Integer.parseInt(u4.getText()),Integer.parseInt(u5.getText()),Integer.parseInt(u6.getText()),Integer.parseInt(u7.getText()));
+			//composition r=new composition(Integer.parseInt(u1.getText()),Integer.parseInt(u2.getText()),Integer.parseInt(u3.getText()));
+				if(u7.getText()!="" && u1.getText()!="")
+					new produitDAO(cnx).update(r);
+				
+			}
+		}
+	});
+	
+	del.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			String tablee=cb_table.getSelectedItem()+"";
+			if(tablee.equals("Rangement")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();
+				pp.add(lbb);	pp.add(jf1); pp.add(lbb2); pp.add(u);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				Rangement r=new Rangement(Integer.parseInt((jf1.getText())),u.getText());
+			
+				if(jf1.getText()!="" && u.getText()!="")
+				new RangementDAO(cnx).delete(r);
+				
+			}
+			if(tablee.equals("TypeIngredient")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();
+				pp.add(lbb);	pp.add(jf1); pp.add(lbb2); pp.add(u);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				TypeIngredient r=new TypeIngredient(u.getText(),Integer.parseInt((jf1.getText())));
+			
+				if(jf1.getText()!="" && u.getText()!="")
+				new typeingredientDAO(cnx).delete(r);
+				
+			}
+			if(tablee.equals("Ingredient")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JLabel lbb3=new JLabel("Donner reftype");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb);	pp.add(jf1); pp.add(lbb2); pp.add(u);pp.add(lbb3);pp.add(u3);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				Ingredient r=new Ingredient(u.getText(),Integer.parseInt((jf1.getText())),Integer.parseInt(u3.getText()));
+			
+				if(jf1.getText()!="" && u.getText()!="")
+				new IngredientDAO(cnx).delete(r);
+				
+			}
+			if(tablee.equals("Recette")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner nom");JLabel lbb2=new JLabel("Donner ref");
+				JLabel lbb3=new JLabel("Donner reftype");
+				JPanel pp=new JPanel(new GridLayout(3,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb1);	pp.add(u1); pp.add(lbb2); pp.add(u2);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				
+			Recette r=new Recette(u1.getText(),Integer.parseInt(u2.getText()));
+				if(u2.getText()!="" && u1.getText()!="")
+				new RecetteDAO(cnx).delete(r);
+				
+			}
+			if(tablee.equals("Composition")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner ref composition");JLabel lbb2=new JLabel("Donner ingredient");
+				JLabel lbb3=new JLabel("Donner recette");
+				JPanel pp=new JPanel(new GridLayout(3,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb1);	pp.add(u1); pp.add(lbb2); pp.add(u2);pp.add(lbb3); pp.add(u3);
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				
+			composition r=new composition(Integer.parseInt(u1.getText()),Integer.parseInt(u2.getText()),Integer.parseInt(u3.getText()));
+				if(u2.getText()!="" && u1.getText()!="")
+				new compositionDAO(cnx).delete(r);
+				
+			}
+			if(tablee.equals("Produit")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner ref produit");JLabel lbb2=new JLabel("Donner descr");
+				JLabel lbb3=new JLabel("Donner date");
+				JLabel lbb4=new JLabel("Donner qt");
+				JLabel lbb5=new JLabel("Donner prix");
+				JLabel lbb6=new JLabel("Donner ref rnag");
+				JLabel lbb7=new JLabel("Donner ref ingred");
+				JPanel pp=new JPanel(new GridLayout(14,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				JTextField u5=new JTextField();JTextField u6=new JTextField();
+				JTextField u7=new JTextField();
+				pp.add(lbb1);	pp.add(u1); pp.add(lbb2); pp.add(u2);pp.add(lbb3); pp.add(u3);
+				pp.add(lbb4);	pp.add(u4); pp.add(lbb5); pp.add(u5);pp.add(lbb6); pp.add(u6);
+				pp.add(lbb7); pp.add(u7);
+				JOptionPane.showMessageDialog(null,  pp);
+				produit r=new produit(Integer.parseInt(u1.getText()),u2.getText(),u3.getText(),Integer.parseInt(u4.getText()),Integer.parseInt(u5.getText()),Integer.parseInt(u6.getText()),Integer.parseInt(u7.getText()));
+			//composition r=new composition(Integer.parseInt(u1.getText()),Integer.parseInt(u2.getText()),Integer.parseInt(u3.getText()));
+				if(u7.getText()!="" && u1.getText()!="")
+					new produitDAO(cnx).delete(r);
+				
+			}
+		}
+	});
+	rech.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			String tablee=cb_table.getSelectedItem()+"";
+			if(tablee.equals("Rangement")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();
+				pp.add(lbb);	pp.add(jf1); 
+			
+				JOptionPane.showMessageDialog(null,  pp);
+			//	Rangement r=new Rangement(Integer.parseInt((jf1.getText())),u.getText());
+				Rangement r;
+				if(jf1.getText()!="" )
+				 {	r=new RangementDAO(cnx).find(Integer.parseInt(jf1.getText()));
+					if(r==null)	JOptionPane.showMessageDialog(null, new JTextField("elem not found "));
+					else {
+						JOptionPane.showMessageDialog(null, r.getrefrangement()+"\n ");}
+					}
+				
+			}
+			if(tablee.equals("TypeIngredient")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();
+				pp.add(lbb);	pp.add(jf1); 
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				TypeIngredient r;//=new TypeIngredient(u.getText(),Integer.parseInt((jf1.getText())));
+			
+				if(jf1.getText()!="" )
+					 {	r=new typeingredientDAO(cnx).find(Integer.parseInt(jf1.getText()));
+				if(r==null)	JOptionPane.showMessageDialog(null, new JTextField("elem not found "));
+				else {
+					JOptionPane.showMessageDialog(null, r.getreftype()+"\n ");}
+				}
+
+				
+			}
+			if(tablee.equals("Ingredient")) {
+				jf1=new JTextField();
+				JLabel lbb=new JLabel("Donner ref");JLabel lbb2=new JLabel("Donner nom");
+				JLabel lbb3=new JLabel("Donner reftype");
+				JPanel pp=new JPanel(new GridLayout(3,1));
+				JTextField u=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb);	pp.add(jf1); 
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				Ingredient r;//=new Ingredient(u.getText(),Integer.parseInt((jf1.getText())),Integer.parseInt(u3.getText()));
+			
+				if(jf1.getText()!="" )
+					 {	r=new IngredientDAO(cnx).find(Integer.parseInt(jf1.getText()));
+				if(r==null)	JOptionPane.showMessageDialog(null, new JTextField("elem not found "));
+				else {
+					JOptionPane.showMessageDialog(null, r.refingredient+"\n ");}
+				}
+				
+			}
+			if(tablee.equals("Recette")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner nom");JLabel lbb2=new JLabel("Donner ref");
+				JLabel lbb3=new JLabel("Donner reftype");
+				JPanel pp=new JPanel(new GridLayout(3,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb1);	pp.add(u1); /*pp.add(lbb2); pp.add(u2);*/
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				
+			Recette r;//=new Recette(u1.getText(),Integer.parseInt(u2.getText()));
+				if( u1.getText()!="")
+				 {	r=new RecetteDAO(cnx).find(Integer.parseInt(u1.getText()));
+				if(r==null)	JOptionPane.showMessageDialog(null, new JTextField("elem not found "));
+				else {
+					JOptionPane.showMessageDialog(null, r.refrecette+"\n ");}
+				}
+				
+			}
+			if(tablee.equals("Composition")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner ref composition");JLabel lbb2=new JLabel("Donner ingredient");
+				JLabel lbb3=new JLabel("Donner recette");
+				JPanel pp=new JPanel(new GridLayout(3,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				pp.add(lbb1);	pp.add(u1);/* pp.add(lbb2); pp.add(u2);pp.add(lbb3); pp.add(u3);*/
+			
+				JOptionPane.showMessageDialog(null,  pp);
+				
+			composition r;//=new composition(Integer.parseInt(u1.getText()),Integer.parseInt(u2.getText()),Integer.parseInt(u3.getText()));
+				if( u1.getText()!="")
+				 {	r=new compositionDAO(cnx).find(Integer.parseInt(u1.getText()));
+				if(r==null)	JOptionPane.showMessageDialog(null, new JTextField("elem not found "));
+				else {
+					JOptionPane.showMessageDialog(null, r.refcomposition+"\n ");}
+				}
+				
+				
+			}
+			if(tablee.equals("Produit")) {
+				JTextField u2=new JTextField();
+				JLabel lbb1=new JLabel("Donner ref produit");JLabel lbb2=new JLabel("Donner descr");
+				JLabel lbb3=new JLabel("Donner date");
+				JLabel lbb4=new JLabel("Donner qt");
+				JLabel lbb5=new JLabel("Donner prix");
+				JLabel lbb6=new JLabel("Donner ref rnag");
+				JLabel lbb7=new JLabel("Donner ref ingred");
+				JPanel pp=new JPanel(new GridLayout(14,1));JTextField u4=new JTextField();
+				JTextField u1=new JTextField();JTextField u3=new JTextField();
+				JTextField u5=new JTextField();JTextField u6=new JTextField();
+				JTextField u7=new JTextField();
+				pp.add(lbb1);	pp.add(u1);/* pp.add(lbb2); pp.add(u2);pp.add(lbb3); pp.add(u3);
+				pp.add(lbb4);	pp.add(u4); pp.add(lbb5); pp.add(u5);pp.add(lbb6); pp.add(u6);
+				pp.add(lbb7); pp.add(u7);*/
+				JOptionPane.showMessageDialog(null,  pp);
+			produit r;//=new produit(Integer.parseInt(u1.getText()),u2.getText(),u3.getText(),Integer.parseInt(u4.getText()),Integer.parseInt(u5.getText()),Integer.parseInt(u6.getText()),Integer.parseInt(u7.getText()));
+			//composition r=new composition(Integer.parseInt(u1.getText()),Integer.parseInt(u2.getText()),Integer.parseInt(u3.getText()));
+				if(u7.getText()!="" && u1.getText()!="")
+				{	r=new produitDAO(cnx).find(Integer.parseInt(u1.getText()));
+				if(r==null)	JOptionPane.showMessageDialog(null, new JTextField("elem not found "));
+				else {
+					JOptionPane.showMessageDialog(null, r.refproduit+"\n "+r.prixproduit);
+				}
+				}
+				
+			}
+		}
+	});
+	
+	
+}
+}
